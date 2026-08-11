@@ -1,0 +1,730 @@
+[
+ {
+  "entry": {
+   "test_idx": 1417,
+   "probability": 0.9999790191650391,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "header_info[0]",
+     "group": "header_info",
+     "shap": -1.9783556117431536,
+     "direction": "benign",
+     "feature_value_zscore": -0.3115687966346741
+    },
+    {
+     "rank": 2,
+     "feature": "section_info[83]",
+     "group": "section_info",
+     "shap": 0.8885560135126815,
+     "direction": "malicious",
+     "feature_value_zscore": -2.105389356613159
+    },
+    {
+     "rank": 3,
+     "feature": "section_info[4]",
+     "group": "section_info",
+     "shap": 0.8485403110980886,
+     "direction": "malicious",
+     "feature_value_zscore": 0.8362730145454407
+    },
+    {
+     "rank": 4,
+     "feature": "section_info[98]",
+     "group": "section_info",
+     "shap": -0.824111114620158,
+     "direction": "benign",
+     "feature_value_zscore": -0.4713761508464813
+    },
+    {
+     "rank": 5,
+     "feature": "strings[101]",
+     "group": "strings",
+     "shap": 0.7430990237009861,
+     "direction": "malicious",
+     "feature_value_zscore": 0.42456871271133423
+    },
+    {
+     "rank": 6,
+     "feature": "imports[117]",
+     "group": "imports",
+     "shap": -0.6871191799257481,
+     "direction": "benign",
+     "feature_value_zscore": -1.4301488399505615
+    },
+    {
+     "rank": 7,
+     "feature": "imports[11]",
+     "group": "imports",
+     "shap": 0.6503744882475861,
+     "direction": "malicious",
+     "feature_value_zscore": -4.870890140533447
+    },
+    {
+     "rank": 8,
+     "feature": "header_info[53]",
+     "group": "header_info",
+     "shap": 0.606091945188993,
+     "direction": "malicious",
+     "feature_value_zscore": -0.38025590777397156
+    },
+    {
+     "rank": 9,
+     "feature": "strings[103]",
+     "group": "strings",
+     "shap": 0.49602876180633876,
+     "direction": "malicious",
+     "feature_value_zscore": -0.01807756908237934
+    },
+    {
+     "rank": 10,
+     "feature": "byte_histogram[0]",
+     "group": "byte_histogram",
+     "shap": -0.43013975779613584,
+     "direction": "benign",
+     "feature_value_zscore": 0.007886405102908611
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex PE structure with multiple sections and a high presence of strings, indicating a potentially sophisticated binary. The strong presence of section_info and strings features, along with import calls, supports a scenario where the binary may be packed or compressed, or possibly obfuscating its true nature through import-heavy behavior. However, the reducing features, particularly those related to header_info and imports, significantly weaken the case for malicious intent. The byte_histogram also indicates a less suspicious binary structure.\n\nThe observed pattern best fits the \"packing-or-compression\" label. This classification is supported by the high number of imports and strings, which could indicate packing or compression techniques used to obfuscate the binary's true purpose. The reducing features, especially the anomalies in header_info and imports, suggest that while the binary may be obfuscated, it does not exhibit clear signs of malicious behavior such as direct C2 communication or persistence mechanisms.\n\nRecommended SOC triage actions include: \n1. Perform dynamic analysis to observe the binary's behavior in a controlled environment.\n2. Conduct a detailed static analysis focusing on the import and string contents to identify potential obfuscation methods.\n3. Isolate the binary and perform a thorough scan with up-to-date antivirus definitions to rule out known threats.",
+  "gen_seconds": 21.80160403251648,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 9311,
+   "probability": 0.9600322246551514,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "strings[99]",
+     "group": "strings",
+     "shap": -1.3881013948882843,
+     "direction": "benign",
+     "feature_value_zscore": -0.16241906583309174
+    },
+    {
+     "rank": 2,
+     "feature": "header_info[0]",
+     "group": "header_info",
+     "shap": 1.205098633899067,
+     "direction": "malicious",
+     "feature_value_zscore": 0.3922145962715149
+    },
+    {
+     "rank": 3,
+     "feature": "byte_histogram[0]",
+     "group": "byte_histogram",
+     "shap": 1.0269488209929012,
+     "direction": "malicious",
+     "feature_value_zscore": -1.046306848526001
+    },
+    {
+     "rank": 4,
+     "feature": "imports[117]",
+     "group": "imports",
+     "shap": -0.9091367323377598,
+     "direction": "benign",
+     "feature_value_zscore": -1.4301488399505615
+    },
+    {
+     "rank": 5,
+     "feature": "header_info[11]",
+     "group": "header_info",
+     "shap": 0.8994545091617345,
+     "direction": "malicious",
+     "feature_value_zscore": 0.5926462411880493
+    },
+    {
+     "rank": 6,
+     "feature": "section_info[46]",
+     "group": "section_info",
+     "shap": -0.6647739455540973,
+     "direction": "benign",
+     "feature_value_zscore": -0.08467821776866913
+    },
+    {
+     "rank": 7,
+     "feature": "general_file_info[2]",
+     "group": "general_file_info",
+     "shap": -0.6243536266200649,
+     "direction": "benign",
+     "feature_value_zscore": 1.2374240159988403
+    },
+    {
+     "rank": 8,
+     "feature": "byte_entropy_histogram[0]",
+     "group": "byte_entropy_histogram",
+     "shap": -0.6171407461370517,
+     "direction": "benign",
+     "feature_value_zscore": -0.31976887583732605
+    },
+    {
+     "rank": 9,
+     "feature": "imports[32]",
+     "group": "imports",
+     "shap": 0.562232914436258,
+     "direction": "malicious",
+     "feature_value_zscore": 2.3660848140716553
+    },
+    {
+     "rank": 10,
+     "feature": "strings[103]",
+     "group": "strings",
+     "shap": -0.5377756871564509,
+     "direction": "benign",
+     "feature_value_zscore": -0.1667998731136322
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex binary with a high degree of obfuscation and potential packing or compression, indicated by the significant SHAP scores from `header_info` and `byte_histogram`. The presence of obfuscated imports and a high number of API calls also supports this. However, the strong evidence against malice from `strings`, `imports`, `section_info`, and `byte_entropy_histogram` significantly reduces the overall malicious score. These features point towards a binary that may be benign or less malicious than initially indicated, possibly due to legitimate use of APIs and obfuscation techniques.\n\nThe observed pattern best fits the \"packing-or-compression\" label, as the high SHAP scores from `header_info` and `byte_histogram` strongly indicate that the binary may be packed or compressed, which is common in benign binaries as well as malware. The reduction in malicious score from features like `strings` and `imports` further supports this classification.\n\nGiven the mixed evidence, the recommended SOC triage action is to perform dynamic analysis, including behavioral monitoring and sandboxing, to confirm the nature of the binary. This will help determine if the binary is benign or potentially malicious in context, and whether further investigation or remediation is required.",
+  "gen_seconds": 20.31639313697815,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 17042,
+   "probability": 0.9777138829231262,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "section_info[98]",
+     "group": "section_info",
+     "shap": 4.196152811621113,
+     "direction": "malicious",
+     "feature_value_zscore": 1.1774179935455322
+    },
+    {
+     "rank": 2,
+     "feature": "section_info[3]",
+     "group": "section_info",
+     "shap": 1.4790799679675877,
+     "direction": "malicious",
+     "feature_value_zscore": 0.3066873550415039
+    },
+    {
+     "rank": 3,
+     "feature": "section_info[4]",
+     "group": "section_info",
+     "shap": 0.7917129951991154,
+     "direction": "malicious",
+     "feature_value_zscore": 0.8362730145454407
+    },
+    {
+     "rank": 4,
+     "feature": "imports[665]",
+     "group": "imports",
+     "shap": -0.7737066201177129,
+     "direction": "benign",
+     "feature_value_zscore": 1.8423068523406982
+    },
+    {
+     "rank": 5,
+     "feature": "section_info[242]",
+     "group": "section_info",
+     "shap": 0.6786262155519179,
+     "direction": "malicious",
+     "feature_value_zscore": 1.3157538175582886
+    },
+    {
+     "rank": 6,
+     "feature": "header_info[0]",
+     "group": "header_info",
+     "shap": -0.6503262002500386,
+     "direction": "benign",
+     "feature_value_zscore": -0.16150471568107605
+    },
+    {
+     "rank": 7,
+     "feature": "strings[99]",
+     "group": "strings",
+     "shap": -0.5539641206454835,
+     "direction": "benign",
+     "feature_value_zscore": -0.11629176884889603
+    },
+    {
+     "rank": 8,
+     "feature": "imports[500]",
+     "group": "imports",
+     "shap": -0.48443284539020676,
+     "direction": "benign",
+     "feature_value_zscore": -0.32977065443992615
+    },
+    {
+     "rank": 9,
+     "feature": "header_info[53]",
+     "group": "header_info",
+     "shap": -0.4699175765341166,
+     "direction": "benign",
+     "feature_value_zscore": -0.18976160883903503
+    },
+    {
+     "rank": 10,
+     "feature": "imports[731]",
+     "group": "imports",
+     "shap": -0.3685471378794379,
+     "direction": "benign",
+     "feature_value_zscore": 2.461216926574707
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex PE file structure with multiple sections having non-standard properties, particularly in the section names, sizes, and entropies. This indicates a potential packing or compression mechanism, as such techniques often result in unusual section characteristics. The presence of numerous and varied Windows API imports, albeit some being obfuscated or less common, suggests the binary may be importing a wide range of functions, which could indicate either benign software or a more sophisticated piece of malware designed to evade detection through obfuscation.\n\nThe overall classification is \"packing-or-compression,\" primarily due to the anomalies in section layout and the presence of obfuscated imports. However, the strong evidence against malice, including a header timestamp, common import patterns, and a typical string profile, significantly reduces the confidence in this classification. The import-heavy nature of the binary also complicates the assessment, as it could be indicative of both benign and malicious software.\n\nGiven the mixed evidence, the recommended SOC triage action is to conduct dynamic analysis to observe the behavior in a controlled environment. Additionally, perform a detailed static analysis focusing on the import and section details to further investigate any potential obfuscation or packing mechanisms.",
+  "gen_seconds": 19.579174995422363,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 20618,
+   "probability": 0.9116242527961731,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "section_info[98]",
+     "group": "section_info",
+     "shap": 5.396055747431832,
+     "direction": "malicious",
+     "feature_value_zscore": 1.1118615865707397
+    },
+    {
+     "rank": 2,
+     "feature": "header_info[0]",
+     "group": "header_info",
+     "shap": -2.5948561503571312,
+     "direction": "benign",
+     "feature_value_zscore": -0.18014389276504517
+    },
+    {
+     "rank": 3,
+     "feature": "imports[8]",
+     "group": "imports",
+     "shap": 1.4150842014730591,
+     "direction": "malicious",
+     "feature_value_zscore": -3.276571750640869
+    },
+    {
+     "rank": 4,
+     "feature": "section_info[3]",
+     "group": "section_info",
+     "shap": 1.3338777945821791,
+     "direction": "malicious",
+     "feature_value_zscore": 0.3066873550415039
+    },
+    {
+     "rank": 5,
+     "feature": "header_info[53]",
+     "group": "header_info",
+     "shap": -1.1031187615559535,
+     "direction": "benign",
+     "feature_value_zscore": -0.2850087583065033
+    },
+    {
+     "rank": 6,
+     "feature": "section_info[4]",
+     "group": "section_info",
+     "shap": 1.051742019397828,
+     "direction": "malicious",
+     "feature_value_zscore": 0.8362730145454407
+    },
+    {
+     "rank": 7,
+     "feature": "imports[635]",
+     "group": "imports",
+     "shap": -0.9544082564396974,
+     "direction": "benign",
+     "feature_value_zscore": 0.3696371614933014
+    },
+    {
+     "rank": 8,
+     "feature": "section_info[242]",
+     "group": "section_info",
+     "shap": 0.923971542330087,
+     "direction": "malicious",
+     "feature_value_zscore": 1.3157538175582886
+    },
+    {
+     "rank": 9,
+     "feature": "imports[340]",
+     "group": "imports",
+     "shap": -0.8617584032162788,
+     "direction": "benign",
+     "feature_value_zscore": 4.362751007080078
+    },
+    {
+     "rank": 10,
+     "feature": "strings[103]",
+     "group": "strings",
+     "shap": 0.7429701582710767,
+     "direction": "malicious",
+     "feature_value_zscore": -0.1136847659945488
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex PE file with an unusual section layout and a high presence of strings, which could indicate a packed or compressed binary or one that heavily utilizes imported APIs. The presence of multiple sections with high entropy and large sizes, along with a high number of strings, is notable. However, the header metadata and certain import patterns show anomalies that reduce the overall malicious score, suggesting that the binary may be obfuscated or packed rather than outright malicious.\n\nThis pattern best fits the \"packing-or-compression\" label. The high number of sections with unusual properties and the presence of many strings are consistent with a packed or compressed binary, while the reduced malicious score due to header metadata and import anomalies further support this classification.\n\nFor SOC triage actions, perform a deeper analysis using unpacking tools to explore the binary's true nature. Conduct a behavioral analysis to check for any suspicious activities. Additionally, update the system's signature database to ensure it can detect and handle potential unpacked variants.",
+  "gen_seconds": 16.420400857925415,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 21275,
+   "probability": 0.9138259887695312,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "section_info[96]",
+     "group": "section_info",
+     "shap": 4.539732237549037,
+     "direction": "malicious",
+     "feature_value_zscore": -0.6731989979743958
+    },
+    {
+     "rank": 2,
+     "feature": "strings[103]",
+     "group": "strings",
+     "shap": -1.8582527508743953,
+     "direction": "benign",
+     "feature_value_zscore": -0.1455538272857666
+    },
+    {
+     "rank": 3,
+     "feature": "header_info[11]",
+     "group": "header_info",
+     "shap": 1.6617155917042346,
+     "direction": "malicious",
+     "feature_value_zscore": 0.5926462411880493
+    },
+    {
+     "rank": 4,
+     "feature": "general_file_info[2]",
+     "group": "general_file_info",
+     "shap": -1.361770563657286,
+     "direction": "benign",
+     "feature_value_zscore": 1.2374240159988403
+    },
+    {
+     "rank": 5,
+     "feature": "general_file_info[7]",
+     "group": "general_file_info",
+     "shap": 1.1996555184094304,
+     "direction": "malicious",
+     "feature_value_zscore": -0.5487812757492065
+    },
+    {
+     "rank": 6,
+     "feature": "imports[846]",
+     "group": "imports",
+     "shap": -1.0546498854742905,
+     "direction": "benign",
+     "feature_value_zscore": -3.716888427734375
+    },
+    {
+     "rank": 7,
+     "feature": "imports[582]",
+     "group": "imports",
+     "shap": -0.8936563526810261,
+     "direction": "benign",
+     "feature_value_zscore": -0.40670523047447205
+    },
+    {
+     "rank": 8,
+     "feature": "section_info[226]",
+     "group": "section_info",
+     "shap": 0.8767470603224953,
+     "direction": "malicious",
+     "feature_value_zscore": -0.11047155410051346
+    },
+    {
+     "rank": 9,
+     "feature": "header_info[0]",
+     "group": "header_info",
+     "shap": -0.7902897189135438,
+     "direction": "benign",
+     "feature_value_zscore": -0.04988653585314751
+    },
+    {
+     "rank": 10,
+     "feature": "imports[665]",
+     "group": "imports",
+     "shap": 0.7496060320939334,
+     "direction": "malicious",
+     "feature_value_zscore": -0.31460097432136536
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex binary with a mix of typical and potentially suspicious characteristics. The presence of multiple sections with high entropy and large sizes indicates a possibly packed or compressed binary, which could be an attempt to evade signature-based detection. The numerous imported APIs, especially those from common libraries like `kernel32.dll` and `advapi32.dll`, point towards an import-heavy binary, which is common in legitimate applications but also in some malware. However, the presence of a string profile anomaly, evidenced by the reduction in the malicious score due to the presence of many printable strings, significantly weakens the case for malicious intent. The header metadata anomalies, particularly the timestamp and subsystem fields, further complicate the assessment.\n\n**Classification:** Import-heavy\n\nThe import-heavy nature suggests this binary may be a legitimate application or a benign tool, but the packed sections and high number of imports make it difficult to rule out malicious intent entirely. Given the mixed signals, this sample falls into the category of insufficient evidence for a definitive classification.\n\n**Recommended Actions:** \n1. Perform dynamic analysis to observe behavior in a controlled environment.\n2. Conduct a deeper static analysis focusing on the packed sections to determine if they contain obfuscation or malicious code.\n3. Scan for known packers or compressors to identify if the binary is obfuscated.",
+  "gen_seconds": 22.06061100959778,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 23168,
+   "probability": 0.9289156198501587,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "section_info[3]",
+     "group": "section_info",
+     "shap": 4.075658854288464,
+     "direction": "malicious",
+     "feature_value_zscore": 0.8101750016212463
+    },
+    {
+     "rank": 2,
+     "feature": "imports[8]",
+     "group": "imports",
+     "shap": 1.993730081328801,
+     "direction": "malicious",
+     "feature_value_zscore": -3.276571750640869
+    },
+    {
+     "rank": 3,
+     "feature": "strings[101]",
+     "group": "strings",
+     "shap": -1.600809171661947,
+     "direction": "benign",
+     "feature_value_zscore": 0.12462033331394196
+    },
+    {
+     "rank": 4,
+     "feature": "header_info[53]",
+     "group": "header_info",
+     "shap": 1.0785358152071511,
+     "direction": "malicious",
+     "feature_value_zscore": -0.7612444758415222
+    },
+    {
+     "rank": 5,
+     "feature": "imports[68]",
+     "group": "imports",
+     "shap": 0.9427362614542152,
+     "direction": "malicious",
+     "feature_value_zscore": -2.6960463523864746
+    },
+    {
+     "rank": 6,
+     "feature": "section_info[242]",
+     "group": "section_info",
+     "shap": 0.9298005870379517,
+     "direction": "malicious",
+     "feature_value_zscore": 1.3157538175582886
+    },
+    {
+     "rank": 7,
+     "feature": "data_directories[3]",
+     "group": "data_directories",
+     "shap": -0.7788112157765019,
+     "direction": "benign",
+     "feature_value_zscore": 0.372739315032959
+    },
+    {
+     "rank": 8,
+     "feature": "header_info[31]",
+     "group": "header_info",
+     "shap": -0.7017370253261265,
+     "direction": "benign",
+     "feature_value_zscore": -0.20363637804985046
+    },
+    {
+     "rank": 9,
+     "feature": "imports[421]",
+     "group": "imports",
+     "shap": -0.7000398974302748,
+     "direction": "benign",
+     "feature_value_zscore": 2.823244094848633
+    },
+    {
+     "rank": 10,
+     "feature": "section_info[252]",
+     "group": "section_info",
+     "shap": -0.647854119318433,
+     "direction": "benign",
+     "feature_value_zscore": -2.7532284259796143
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex binary with a high number of imported APIs, particularly those related to Windows system calls, indicating potential for interaction with the operating system. The presence of multiple sections with high entropy and unusual characteristics points towards a potentially packed or compressed binary. However, the abundance of printable strings and the presence of common data directories reduce the likelihood of this being a packed binary. The header metadata and section layout show typical characteristics but with anomalies, such as unusual timestamps or machine types, which could indicate modifications or obfuscation. The string profile contains a mix of common and uncommon strings, suggesting the binary may be obfuscated or performing legitimate operations with some obfuscation.\n\nThe observed pattern best fits the \"packing-or-compression\" label, given the high number of imported APIs and the presence of multiple sections with high entropy, despite the presence of common data directories and strings that reduce this likelihood.\n\nRecommended SOC triage actions include: \n1. Perform dynamic analysis to observe behavior in a controlled environment.\n2. Conduct a deeper static analysis focusing on the import and section details.\n3. Check for known packers or compressors that match the observed characteristics.",
+  "gen_seconds": 19.26572060585022,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 27434,
+   "probability": 0.999985933303833,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "imports[735]",
+     "group": "imports",
+     "shap": -2.5899611616147764,
+     "direction": "benign",
+     "feature_value_zscore": 4.926928997039795
+    },
+    {
+     "rank": 2,
+     "feature": "section_info[228]",
+     "group": "section_info",
+     "shap": 2.405953400379278,
+     "direction": "malicious",
+     "feature_value_zscore": 1.5412079095840454
+    },
+    {
+     "rank": 3,
+     "feature": "section_info[0]",
+     "group": "section_info",
+     "shap": -1.7414410272691578,
+     "direction": "benign",
+     "feature_value_zscore": 1.6949737071990967
+    },
+    {
+     "rank": 4,
+     "feature": "section_info[233]",
+     "group": "section_info",
+     "shap": 1.42960925550539,
+     "direction": "malicious",
+     "feature_value_zscore": 2.384650945663452
+    },
+    {
+     "rank": 5,
+     "feature": "section_info[205]",
+     "group": "section_info",
+     "shap": 1.0357016765920823,
+     "direction": "malicious",
+     "feature_value_zscore": -0.24661770462989807
+    },
+    {
+     "rank": 6,
+     "feature": "section_info[242]",
+     "group": "section_info",
+     "shap": 0.8434382264014952,
+     "direction": "malicious",
+     "feature_value_zscore": 1.3157538175582886
+    },
+    {
+     "rank": 7,
+     "feature": "strings[103]",
+     "group": "strings",
+     "shap": 0.7717271510434875,
+     "direction": "malicious",
+     "feature_value_zscore": -0.1243077889084816
+    },
+    {
+     "rank": 8,
+     "feature": "section_info[96]",
+     "group": "section_info",
+     "shap": 0.7336805654881438,
+     "direction": "malicious",
+     "feature_value_zscore": 1.4558991193771362
+    },
+    {
+     "rank": 9,
+     "feature": "strings[99]",
+     "group": "strings",
+     "shap": 0.7174639525675888,
+     "direction": "malicious",
+     "feature_value_zscore": 0.2357150763273239
+    },
+    {
+     "rank": 10,
+     "feature": "strings[101]",
+     "group": "strings",
+     "shap": 0.6247532414044396,
+     "direction": "malicious",
+     "feature_value_zscore": -0.13395588099956512
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex PE file structure with multiple sections of varying sizes and entropies, indicating a potentially obfuscated or packed binary. The presence of numerous printable strings, particularly URLs and paths, points towards a file that may be attempting to communicate over the network or interact with the system. However, the absence of significant Windows API imports and the presence of anomalies in the section layout reduce the confidence in the maliciousness of the file.\n\nThe observed pattern best fits the \"string-profile-anomaly\" label. While the string profile suggests potential network activity, the lack of significant API imports and the anomalies in section layout weaken the case for malicious intent. The SHAP values for the section_info features are notably high, but the reduction in score from the imports and section_info[0] features significantly diminishes the overall maliciousness score.\n\nGiven the current evidence, the recommended SOC triage action is to perform a dynamic analysis to observe the behavior in a controlled environment. This will help determine if the file engages in any suspicious activities such as C2 communication or persistence, which cannot be conclusively determined from the static analysis alone.",
+  "gen_seconds": 18.93706774711609,
+  "validation": []
+ },
+ {
+  "entry": {
+   "test_idx": 27448,
+   "probability": 0.9999828338623047,
+   "features": [
+    {
+     "rank": 1,
+     "feature": "section_info[145]",
+     "group": "section_info",
+     "shap": 2.278173648089917,
+     "direction": "malicious",
+     "feature_value_zscore": 3.764681339263916
+    },
+    {
+     "rank": 2,
+     "feature": "section_info[205]",
+     "group": "section_info",
+     "shap": -1.4239253157969216,
+     "direction": "benign",
+     "feature_value_zscore": 1.6034518480300903
+    },
+    {
+     "rank": 3,
+     "feature": "data_directories[9]",
+     "group": "data_directories",
+     "shap": 1.3906406317524702,
+     "direction": "malicious",
+     "feature_value_zscore": -0.03330438956618309
+    },
+    {
+     "rank": 4,
+     "feature": "section_info[233]",
+     "group": "section_info",
+     "shap": -0.9264539776055094,
+     "direction": "benign",
+     "feature_value_zscore": -1.7290030717849731
+    },
+    {
+     "rank": 5,
+     "feature": "strings[101]",
+     "group": "strings",
+     "shap": 0.8379721046770213,
+     "direction": "malicious",
+     "feature_value_zscore": -0.13395588099956512
+    },
+    {
+     "rank": 6,
+     "feature": "section_info[242]",
+     "group": "section_info",
+     "shap": 0.7487170614137239,
+     "direction": "malicious",
+     "feature_value_zscore": 1.3157538175582886
+    },
+    {
+     "rank": 7,
+     "feature": "section_info[96]",
+     "group": "section_info",
+     "shap": 0.7386783933493254,
+     "direction": "malicious",
+     "feature_value_zscore": 1.4558991193771362
+    },
+    {
+     "rank": 8,
+     "feature": "section_info[95]",
+     "group": "section_info",
+     "shap": -0.6032134411402645,
+     "direction": "benign",
+     "feature_value_zscore": 5.55795955657959
+    },
+    {
+     "rank": 9,
+     "feature": "strings[103]",
+     "group": "strings",
+     "shap": 0.5923550355540702,
+     "direction": "malicious",
+     "feature_value_zscore": -0.02870059199631214
+    },
+    {
+     "rank": 10,
+     "feature": "imports[43]",
+     "group": "imports",
+     "shap": -0.5860755151206359,
+     "direction": "benign",
+     "feature_value_zscore": 2.1507198810577393
+    }
+   ]
+  },
+  "report": "The contributing features suggest a complex PE file with a notable presence of strings and section information, indicative of a potentially packed or compressed binary. The high SHAP values for section_info and strings imply that the file has a non-standard section layout and contains a significant number of printable strings, possibly URLs or paths. However, the presence of features reducing the malicious score, such as section_info and imports, notably weakens the case. Specifically, the imports feature indicates that the binary does not rely heavily on common Windows APIs, which could suggest obfuscation or packing.\n\nThe observed pattern best fits the \"packing-or-compression\" label, as the high SHAP scores for section_info and strings, combined with the reduced malicious score from imports, point towards a binary that may be packed or compressed to avoid detection.\n\nFor SOC triage actions, initial steps should include unpacking or decompressing the binary if possible, followed by a detailed behavioral analysis. Additionally, monitoring for any anomalous network activity or system changes should be prioritized, given the potential for packing techniques to hide malicious behavior.",
+  "gen_seconds": 18.17870330810547,
+  "validation": []
+ }
+]
