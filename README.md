@@ -28,7 +28,6 @@ the slice. With a GPU attached, reports generate live.
 ## Pipeline
 
 | Stage | Component |
-|---|---|
 | Features | EMBER 2018 static PE features, 2,381 → 500 (variance threshold + RF Gini) |
 | Preprocessing | StandardScaler fitted on the EMBER 540K training fold, frozen |
 | Detector | FT-Transformer (Gorishniy et al., 2021), 30 epochs, `87a377e2…` |
