@@ -98,7 +98,7 @@ pred = (scores >= 0.5).astype(int)
 acc = float((pred == y).mean())
 h1, h2, h3, h4 = st.columns(4)
 h1.metric("Files loaded", f"{len(y):,}")
-h2.metric("Class balance", f"{int((y==1).sum()):,} mal / {int((y==0).sum()):,} ben")
+h2.metric("Malicious / benign", f"{int((y==1).sum()):,} / {int((y==0).sum()):,}")
 h3.metric("Accuracy on this slice", f"{acc:.4f}")
 h4.metric("Reports pre-generated", f"{len(cache)}")
 
@@ -169,7 +169,7 @@ live_logit, live_prob = det.score(row_scaled, device="cpu")
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("EMBER test index", f"#{orig}")
-c2.metric("Prediction", verdict, delta=f"p = {prob:.4f}")
+c2.metric("Prediction", verdict)
 c3.metric("Ground truth", "malicious" if truth else "benign")
 c4.metric("Correct?", "✅ yes" if correct else "❌ no")
 st.progress(min(max(prob, 0.0), 1.0), text=f"P(malicious) = {prob:.4f}")
@@ -187,11 +187,6 @@ tab_queue, tab_shap, tab_report, tab_raw = st.tabs(
 
 with tab_queue:
     st.subheader("Open alerts awaiting triage")
-    st.caption(
-        "Five files the detector has flagged, spanning its confidence range. "
-        "Ground truth is withheld here as it would be in a real queue — open a "
-        "file to see whether the detector was right."
-    )
 
     queue = _triage_queue(scores, pred)
 
@@ -230,12 +225,6 @@ with tab_queue:
             st.session_state["sel"] = int(r)
             st.rerun()
 
-    st.caption(
-        "'Evidence toward malicious' counts how many of the ten strongest "
-        "attributions pushed the score up. A high probability backed by thin or "
-        "divided evidence is a different proposition from one backed by ten "
-        "concordant features."
-    )
 
 
 with tab_shap:
@@ -291,8 +280,3 @@ with tab_raw:
         st.json(top)
 
 
-st.divider()
-st.caption(
-    "Prototype for the Mal-D3 dissertation (Aryan Bardhan). Detection and "
-    "attribution run live; data is a fixed EMBER slice with no external fetching."
-)
