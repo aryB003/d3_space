@@ -16,25 +16,27 @@ from functools import lru_cache
 
 
 @lru_cache(maxsize=1)
-def _background(n: int = 8, seed: int = 0) -> np.ndarray:
-    """Balanced reference distribution, scaled. Drawn from the deployment slice.
+def _background(variant: str = config.DEFAULT_DETECTOR,
+                n: int = 8, seed: int = 0) -> np.ndarray:
+    """Balanced reference distribution in `variant`'s input space, drawn from the
+    deployment slice. The same rows are picked for either detector, so a
+    difference between their attributions is the model and not the reference set.
 
     Background size is cheap — GradientExplainer draws one reference per
     gradient sample rather than forwarding the whole set, so this array costs
     ~35 MB per *sample*, not per reference. `nsamples` in explain() is the knob
     that actually governs peak memory; see the note there."""
-    import joblib
+    from .model import prepare
     d = config.ARTIFACTS_DIR
     X = np.load(d / config.DEMO_X, mmap_mode="r")
     y = np.load(d / config.DEMO_Y)
-    scaler = joblib.load(d / config.STANDARD_SCALER)
     rng = np.random.default_rng(seed)
     half = n // 2
     pick = np.concatenate([
         rng.choice(np.where(y == 1)[0], size=half, replace=False),
         rng.choice(np.where(y == 0)[0], size=n - half, replace=False),
     ])
-    return scaler.transform(np.asarray(X[np.sort(pick)])).astype(np.float32)
+    return prepare(np.asarray(X[np.sort(pick)]), variant)
 
 
 # Expected gradients are averaged over independent passes rather than taken in
@@ -47,12 +49,16 @@ CHUNKS = 5
 NSAMPLES_PER_CHUNK = 4
 
 
-def explain(x_scaled: np.ndarray, device: str = "cpu") -> np.ndarray:
-    """Return SHAP values of shape [500] for the single row `x_scaled`."""
+def explain(x_scaled: np.ndarray, variant: str = config.DEFAULT_DETECTOR,
+            device: str = "cpu") -> np.ndarray:
+    """Return SHAP values of shape [500] for the single row `x_scaled`.
+
+    Values are indexed in the detector's own column space, which for a permuted
+    variant is not the stored order; top_k() maps them back before naming."""
     import shap  # imported lazily so the app starts fast
-    ft = load_detector(device)
+    ft = load_detector(variant, device)
     wrapper = FTLogitWrapper(ft).to(device)
-    bg = torch.from_numpy(_background()).to(device)
+    bg = torch.from_numpy(_background(variant)).to(device)
     x = torch.from_numpy(x_scaled).to(device)
     explainer = shap.GradientExplainer(wrapper, bg)
 
@@ -68,17 +74,25 @@ def explain(x_scaled: np.ndarray, device: str = "cpu") -> np.ndarray:
     return (acc / CHUNKS).astype(np.float32)
 
 
-def top_k(shap_row: np.ndarray, x_scaled_row: np.ndarray, probability: float, k: int = TOP_K) -> List[Dict[str, Any]]:
-    """Build the per-file top-k structure used by the prompt template."""
+def top_k(shap_row: np.ndarray, x_scaled_row: np.ndarray, probability: float,
+          k: int = TOP_K, variant: str = config.DEFAULT_DETECTOR) -> List[Dict[str, Any]]:
+    """Build the per-file top-k structure used by the prompt template.
+
+    `shap_row` is indexed in the detector's column space. Under a permuted
+    variant, its column j is original column perm[j], so the index has to be
+    mapped back before it is used to look up a feature name -- otherwise every
+    attribution would be reported against the wrong feature."""
+    from .model import _perm
     meta = data.feature_names()
     names  = meta["names"]
     groups = meta["groups"]
+    to_orig = _perm() if config.DETECTORS[variant]["permute"] else np.arange(len(names))
     order  = np.argsort(-np.abs(shap_row))[:k]
     return [
         {
             "rank":      int(r + 1),
-            "feature":   names[int(j)],
-            "group":     groups[int(j)],
+            "feature":   names[int(to_orig[int(j)])],
+            "group":     groups[int(to_orig[int(j)])],
             "shap":      float(shap_row[int(j)]),
             "direction": "malicious" if shap_row[int(j)] > 0 else "benign",
             "feature_value_zscore": float(x_scaled_row[0, int(j)]),
@@ -92,7 +106,8 @@ def prompt_entry(probability: float, top: List[Dict[str, Any]]) -> Dict[str, Any
 
 
 def top_k_for_row(x_scaled_row: np.ndarray, k: int = TOP_K,
+                  variant: str = config.DEFAULT_DETECTOR,
                   device: str = "cpu") -> List[Dict[str, Any]]:
     """Attribute one scaled [1, 500] row and return its top-k contributors."""
-    vals = explain(x_scaled_row, device=device)
-    return top_k(vals, x_scaled_row, probability=0.0, k=k)
+    vals = explain(x_scaled_row, variant=variant, device=device)
+    return top_k(vals, x_scaled_row, probability=0.0, k=k, variant=variant)

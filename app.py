@@ -38,16 +38,15 @@ def _dataset():
     X = np.load(d / config.DEMO_X).astype(np.float32, copy=False)
     y = np.load(d / config.DEMO_Y).astype(np.int64, copy=False)
     src = np.load(d / config.DEMO_SRCIDX).astype(np.int64, copy=False)
-    import joblib
-    scaler = joblib.load(d / config.STANDARD_SCALER)
-    return X, y, src, scaler
+    return X, y, src
 
 
 @st.cache_data
-def _scores() -> np.ndarray:
+def _scores(variant: str) -> np.ndarray:
     """Precomputed scores for the whole slice, used only to populate the browser.
     The file the user actually selects is re-scored live below."""
-    return np.load(config.ARTIFACTS_DIR / config.DEMO_SCORES).astype(np.float32)
+    return np.load(config.ARTIFACTS_DIR
+                   / config.DETECTORS[variant]["scores"]).astype(np.float32)
 
 
 @st.cache_data
@@ -65,7 +64,8 @@ TRIAGE_BANDS = (0.55, 0.70, 0.85, 0.95, 0.995)
 
 
 @st.cache_data(show_spinner="Building triage queue…")
-def _triage_queue(_scores_arr: np.ndarray, _pred: np.ndarray) -> list[int]:
+def _triage_queue(_scores_arr: np.ndarray, _pred: np.ndarray,
+                  variant_key: str) -> list[int]:
     """Row indices of the queue: nearest flagged file to each confidence band."""
     flagged = np.where(_pred == 1)[0]
     chosen: list[int] = []
@@ -78,9 +78,11 @@ def _triage_queue(_scores_arr: np.ndarray, _pred: np.ndarray) -> list[int]:
     return chosen
 
 
+variant = st.session_state.get("variant", config.DEFAULT_DETECTOR)
+
 try:
-    X, y, src_idx, scaler = _dataset()
-    scores = _scores()
+    X, y, src_idx = _dataset()
+    scores = _scores(variant)
     cache = _cache()
 except FileNotFoundError as e:
     st.error(f"Missing artifact: `{e.filename}`. See `assets/` in the repo README.")
@@ -105,6 +107,25 @@ h4.metric("Reports pre-generated", f"{len(cache)}")
 
 # ----------------------------------------------------------------- sidebar
 with st.sidebar:
+    st.header("Detector")
+    picked = st.selectbox(
+        "Model", list(config.DETECTORS),
+        index=list(config.DETECTORS).index(variant),
+        help="Same architecture, different preprocessing. Switching re-scores the "
+             "slice and recomputes attributions.",
+    )
+    if picked != variant:
+        # lru_cache(maxsize=1) evicts the previous detector, scaler and background,
+        # but CPython only returns the pages once the refcount drops and the
+        # allocator compacts. Collect explicitly: the host cap is 1 GB and a
+        # resident second FT plus its attention buffers is most of the headroom.
+        import gc
+        st.session_state["variant"] = picked
+        gc.collect()
+        st.rerun()
+    st.caption(config.DETECTORS[variant]["blurb"])
+
+    st.divider()
     st.header("Select a file")
 
     view = st.radio(
@@ -148,7 +169,7 @@ with st.sidebar:
 
     st.divider()
     st.caption(
-        "Detector: FT-Transformer, StandardScaler variant, trained on EMBER "
+        f"Detector: {variant}, trained on EMBER "
         "(540K) · Attribution: `shap.GradientExplainer` on the logit · "
         f"Generator: {config.GENERATOR_NAME} (4-bit NF4)."
     )
@@ -164,8 +185,8 @@ correct = (prob >= 0.5) == bool(truth)
 
 # Re-score the selected file live. The browser table uses precomputed values so
 # the page loads instantly; this is the detector actually running, on one sample.
-row_scaled = scaler.transform(X[i:i + 1]).astype(np.float32)
-live_logit, live_prob = det.score(row_scaled, device="cpu")
+row_scaled = det.prepare(X[i:i + 1], variant)
+live_logit, live_prob = det.score(row_scaled, variant=variant, device="cpu")
 
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("EMBER test index", f"#{orig}")
@@ -188,16 +209,19 @@ tab_queue, tab_shap, tab_report, tab_raw = st.tabs(
 with tab_queue:
     st.subheader("Open alerts awaiting triage")
 
-    queue = _triage_queue(scores, pred)
+    # variant_key is what st.cache_data hashes: the array args are underscored
+    # and therefore excluded from the key, so without it the queue would be
+    # computed once and reused for whichever detector was selected first.
+    queue = _triage_queue(scores, pred, variant)
 
     @st.cache_data(show_spinner="Attributing queue entries…")
-    def _queue_evidence(rows: tuple[int, ...]) -> list[dict]:
+    def _queue_evidence(rows: tuple[int, ...], variant_key: str) -> list[dict]:
         """Top driver and evidence balance per queue entry. Cached: this is five
         SHAP passes, and they only need doing once per session."""
         out = []
         for r in rows:
             top = shap_explain.top_k_for_row(
-                scaler.transform(X[r:r + 1]).astype(np.float32), k=10)
+                det.prepare(X[r:r + 1], variant), k=10, variant=variant)
             out.append({
                 "top_driver": top[0]["feature"],
                 "driver_group": top[0]["group"],
@@ -205,7 +229,7 @@ with tab_queue:
             })
         return out
 
-    ev = _queue_evidence(tuple(queue))
+    ev = _queue_evidence(tuple(queue), variant)
     qdf = pd.DataFrame({
         "alert": [f"A{n + 1}" for n in range(len(queue))],
         "file": [f"#{int(src_idx[r])}" for r in queue],
@@ -230,7 +254,7 @@ with tab_queue:
 with tab_shap:
     st.subheader("Top-10 attributions (signed SHAP, logit space)")
     with st.spinner("Computing SHAP attributions…"):
-        top = shap_explain.top_k_for_row(row_scaled, k=10)
+        top = shap_explain.top_k_for_row(row_scaled, k=10, variant=variant)
     df = pd.DataFrame(top)
     shown = df[["rank", "feature", "group", "shap", "direction"]].copy()
     shown["shap"] = shown["shap"].map(lambda v: f"{v:+.4f}")
@@ -246,6 +270,12 @@ with tab_shap:
 with tab_report:
     st.subheader(f"{config.GENERATOR_NAME} triage report")
     cached = cache.get(orig)
+    if cached and variant != "FT-SS":
+        st.info(
+            f"The cached reports were generated from **FT-SS** attributions. "
+            f"You are viewing **{variant}**, so the report below describes a "
+            "different model's reasoning about this file."
+        )
     if cached:
         st.caption(f"Pre-generated · {float(cached.get('gen_seconds', 0)):.1f} s")
         st.markdown(cached.get("report", "").strip())
